@@ -1,55 +1,45 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from pydantic import UUID4
+
+from controller.todo import TodoController, get_todo_controller
+from schemas.todo import TodoItemRequest, TodoItemResponse
 
 
 router = APIRouter()
 
 
 @router.get(
-        "/lists",
-        response_model=list[TodoListResponse]
+        "/lists/{list_id}/todos",
+        response_model=list[TodoItemResponse],
         )
-async def get_lists(
+async def get_todos(
     todo_controller: TodoController = Depends(get_todo_controller),
-) -> list[TodoListResponse]:
-    result = await todo_controller.get_lists()
+) -> list[TodoItemResponse]:
+    result = await todo_controller.get_items()
     return result
-
 
 @router.delete(
-        "/lists/{list_id}",
+        "/lists/{list_id}/todos/{todo_id}",
         status_code=204,
         )
-async def delete_lists(
-    list_id: UUID4,
+async def delete_todo(
+    item_id: UUID4,
     todo_controller: TodoController = Depends(get_todo_controller)
 ):
-    await todo_controller.delete_list(list_id)
-
+    await todo_controller.delete_item(item_id)
 
 @router.post(
-        "/lists",
-        response_model=TodoListResponse,
+        "/lists/{list_id}/todos",
+        response_model=TodoItemResponse,
         status_code=201,
-    )
-async def create_lists(
-    todo_request: TodoListRequest,
+        )
+async def create_todo(
+    todo_request: TodoItemRequest,
     todo_controller: TodoController = Depends(get_todo_controller),
 
 ):
-    result = await todo_controller.create_lists(todo_request.title)
+    result = await todo_controller.create_items(todo_request.title,todo_request.list_id )
     return result
-
-@router.get("/lists/{list_id}/todos")
-def get_todo():
-    return
-
-@router.delete("/lists/{list_id}/todos/{todo_id}")
-def delete_todo():
-    return
-
-@router.post("/lists/{list_id}/todos")
-def create_todo():
-    return
 
 @router.patch("/lists/{list_id}/todos/{todo_id}")
 def update_todo():
