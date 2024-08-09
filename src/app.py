@@ -19,7 +19,7 @@ async def lifespan(_app: FastAPI):
 
 app = FastAPI(
     lifespan=lifespan, 
-    title="Fasr API - todo list Ivan")
+    title="Fast API - todo list Ivan")
 include_routers(app)
 
 if __name__ == "__main__":
