@@ -11,7 +11,10 @@ class TodoItemResponse(BaseModel):
     id: UUID4
     title: str
     list_id: UUID4
+    completed: bool
 
 class TodoItemRequest(BaseModel):
     title: str
     list_id: UUID4
+
+

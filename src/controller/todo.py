@@ -1,6 +1,6 @@
 import uuid
 from databases import Database
-from sqlalchemy import delete, insert, select
+from sqlalchemy import delete, insert, select, update
 from db.models import TodoItem, TodoList
 from schemas.todo import TodoItemResponse, TodoListResponse
 
@@ -32,7 +32,7 @@ class TodoController:
         rows = await self.db.fetch_all(query)
         result = [dict(row) for row in rows]
         return [
-            TodoItemResponse(id= row.get("id"), title= row.get("title"), list_id=row.get("list_id"))
+            TodoItemResponse(id= row.get("id"), title= row.get("title"), list_id=row.get("list_id", completed=row.get("completed")))
             for row in result
         ]
     
@@ -42,10 +42,16 @@ class TodoController:
 
     async def create_items(self, title: str, list_id: uuid.UUID) -> TodoItemResponse:
         item_id = uuid.uuid4()
-        await self.db.execute(insert(TodoItem).values(id=item_id, title=title, list_id=list_id))
-        return TodoItemResponse(id=item_id, title=title, list_id=list_id)
+        await self.db.execute(insert(TodoItem).values(id=item_id, title=title, list_id=list_id, completed=False))
+        return TodoItemResponse(id=item_id, title=title, list_id=list_id, completed=False)
     
+    async def update_item(self, item_id: uuid.UUID) -> None:
+        query = update(TodoItem).where(TodoItem.id == item_id).values(completed=True )
+        await self.db.execute(query)
 
+    
+    
+TodoItemResponse
 todo_controller: TodoController = None 
 
 def get_todo_controller():

@@ -30,7 +30,7 @@ def upgrade() -> None:
     sa.Column('id', sa.UUID(), nullable=False),
     sa.Column('title', sa.String(length=50), nullable=False),
     sa.Column('list_id', sa.UUID(), nullable=False),
-    sa.Column('comleted', sa.Boolean(), nullable=True),
+    sa.Column('completed', sa.Boolean(), nullable=True),
     sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=True),
     sa.ForeignKeyConstraint(['list_id'], ['todo_list.id'], ),
     sa.PrimaryKeyConstraint('id')

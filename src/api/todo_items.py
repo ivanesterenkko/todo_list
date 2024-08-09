@@ -41,6 +41,12 @@ async def create_todo(
     result = await todo_controller.create_items(todo_request.title,todo_request.list_id )
     return result
 
-@router.patch("/lists/{list_id}/todos/{todo_id}")
-def update_todo():
-    return
+@router.patch(
+        "/lists/{list_id}/todos/{todo_id}",
+        status_code=204,
+        )
+async def update_todo(
+    item_id: UUID4,
+    todo_controller: TodoController = Depends(get_todo_controller)
+):
+    await todo_controller.update_item(item_id)

@@ -19,5 +19,5 @@ class TodoItem(Base):
     id = Column(UUID, primary_key=True)
     title = Column(String(50), nullable=False)
     list_id = Column(ForeignKey(TodoList.id), nullable=False)
-    comleted = Column(Boolean, default=False)
+    completed = Column(Boolean, default=False)
     created_at = Column(DateTime, server_default=func.now(tz=timezone.utc))
